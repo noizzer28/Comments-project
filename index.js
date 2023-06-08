@@ -66,6 +66,7 @@ function fetchGet() {
         console.error("Failed to load, check your connection");
       });
   }
+  let isLoginMode = false;
 
 // Рендер комментариев в HTML
 const renderApp = () => {
@@ -101,7 +102,7 @@ const renderApp = () => {
     .join("");
 
   const appElement = document.getElementById("app");
-  let isLoginMode = false;
+
 
   if (!token) {
     const appHtml = `  
@@ -113,9 +114,9 @@ const renderApp = () => {
             </ul>
         <!-- Register -->
         <br>
-        ${isLoginMode ? `Зарегистрируйтесь, или <span id="login-link" class="auth-link">войдите</span>` : 
-        `<div>Чтобы оставлять коментарии войдите или <span id="login-link" class="auth-link">зарегистрируйтесь</span>
-        </div>`}
+        <div>${isLoginMode ? `Зарегистрируйтесь, или <span id="login-link" class="auth-link">войдите</span>` : 
+        `Чтобы оставлять коментарии войдите или <span id="login-link" class="auth-link">зарегистрируйтесь</span>
+        `}</div>
             <div class="add-form" id="inputs">
             ${isLoginMode ? 
                 `        Имя
@@ -138,6 +139,11 @@ const renderApp = () => {
         </div>
     </div>`;
     appElement.innerHTML = appHtml;
+    document.getElementById('login-link').addEventListener("click", () => {
+        console.log("www")
+        isLoginMode = !isLoginMode;
+        fetchGet();
+    })
     document.getElementById('login-button').addEventListener('click', () => {
         console.log("works")
         token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
