@@ -91,9 +91,7 @@ const renderApp = () => {
                <div class="likes">
                  <span class="likes-counter">${comment.likes}</span>
                  <button data-index="${index}" id="likes-button" class="like-button 
-                 ${comment.isLiked ? "-active-like" : ""} ${
-        comment.isLikeLoading ? "-loading-like" : ""
-      }">
+                 ${comment.isLiked ? "-active-like" : ""} ${comment.isLikeLoading ? "-loading-like" : ""}">
                  </button>
                </div>
              </div>
@@ -124,10 +122,9 @@ const renderApp = () => {
     document.getElementById("login-link").addEventListener("click", () => {
         toggleLoginForm();
         function toggleLoginForm() {
-            console.log("www")
             appHtml = `           <div class="container">       
             <div class="add-form" id="inputs">
-            Форма входа
+            Форма ${isLoginMode ? "регистрации" : "входа"}
             <br>
             <br>
             ${isLoginMode ? 
@@ -154,12 +151,13 @@ const renderApp = () => {
                 isLoginMode = !isLoginMode;
                 toggleLoginForm();
             })
+            document.getElementById('login-button').addEventListener('click', () => {
+                console.log("works")
+                token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
+                fetchGet();
+            })
         }
-        document.getElementById('login-button').addEventListener('click', () => {
-            console.log("works")
-            token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
-            fetchGet();
-        })
+
         return;
     })
   } else {
@@ -169,6 +167,8 @@ const renderApp = () => {
             ${commentsHtml}
             </ul>
             <div class="add-form" id="inputs">
+            <textarea type="textarea" class="add-form-text" placeholder="FIX IT"
+            id="name-input" disabled></textarea>
             <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
             id="comment-input"></textarea>
             <div class="add-form-row">
