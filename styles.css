@@ -167,3 +167,8 @@ body {
   .-loading-like {
     animation: rotating 2s linear infinite;
   }
+
+  .auth-link {
+    text-decoration: underline;
+    cursor: pointer;
+  }

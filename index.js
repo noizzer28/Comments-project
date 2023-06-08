@@ -20,7 +20,7 @@ function formatDate(inputDate) {
 let comments = [];
 
 
-
+let token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
 
 
 fetchComments();
@@ -76,7 +76,6 @@ const renderComments = () => {
              </div>
            </li>`
       }).join('');
-      console.log(commentsHtml);
     const appElement = document.getElementById("app");
     const appHtml = `  <div class="container">
     <div id="loading">Подождите, комментарии загружаются...</div>
@@ -174,6 +173,7 @@ const renderComments = () => {
     addCommentElement.textContent = "Данные загружаются..."
     const failedServer = "Сервер сломался, попробуй позже"
     const failedInput = "В поле ввода должно быть минимум три символа"
+    const unauthorised = "Необходимо авторизоваться"
     const fetchPost = (() => {
       fetch(
       host,
@@ -183,7 +183,7 @@ const renderComments = () => {
           text: commentElement.value,
         }),
         headers: {
-          Authorization: "Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek",
+          Authorization: token,
         },
       })
       .then((response) => {
@@ -192,6 +192,8 @@ const renderComments = () => {
           return response.json();
         } else if (response.status === 500) {
           return Promise.reject(new Error(failedServer));
+        } else if (response.status === 401){
+          return Promise.reject(new Error(unauthorised));
         } else {
           return Promise.reject(new Error(failedInput));
         }
@@ -204,19 +206,14 @@ const renderComments = () => {
         commentElement.value = "";
       })
       .catch((error) => {
-          console.log(error);
         if (error.message == failedServer) {
           alert(error);
           fetchPost();
-        } else if (error.message == failedInput){
-          addCommentElement.disabled = false;
-          addCommentElement.textContent = "Попробуй еще раз"
-          alert(error);
         } else {
           addCommentElement.disabled = false;
           addCommentElement.textContent = "Попробуй еще раз"
-          alert("Кажется, у вас сломался интернет, попробуйте позже");
-        }
+          alert(error);
+        } 
       })
     });
     fetchPost();
@@ -250,21 +247,24 @@ function fetchComments() {
       .catch (() => {
         console.error("Failed to load, check your connection")
       })
+
+
+        //     // Выключает кнопку при пустых инпутах
+        // window.addEventListener('input', () => {
+        //     if (commentElement.value === "") {
+        //     addCommentElement.disabled = true;
+        //     } 
+        // });
+        
+        
+        // // Кнопка Enter
+        // window.addEventListener('keyup', () => {
+        //     if (event.key === 'Enter') {
+        //     addCommentElement.click();
+        //     }
+        // });
+  
   };
 
-// Выключает кнопку при пустых инпутах
-window.addEventListener('input', () => {
-  if (commentElement.value === "") {
-    addCommentElement.disabled = true;
-  } 
-});
-
-
-// Кнопка Enter
-window.addEventListener('keyup', () => {
-  if (event.key === 'Enter') {
-    addCommentElement.click();
-  }
-});
 
 
