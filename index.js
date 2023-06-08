@@ -59,14 +59,14 @@ function fetchGet() {
           };
         });
         renderApp();
-        const loadElement = document.getElementById("loading");
-        loadElement.style.display = "none";
       })
-      .catch(() => {
-        console.error("Failed to load, check your connection");
+      .catch((error) => {
+        console.error(error);
       });
   }
-  let isLoginMode = false;
+
+
+let isLoginMode = true;
 
 // Рендер комментариев в HTML
 const renderApp = () => {
@@ -105,31 +105,39 @@ const renderApp = () => {
 
 
   if (!token) {
-    const appHtml = `  
+    let appHtml = `  
         <div class="container">
             <div id="loading">Подождите, комментарии загружаются...
             </div>
             <ul class="comments" id="comments-area">
             ${commentsHtml}
             </ul>
-        <!-- Register -->
         <br>
-        <div>${isLoginMode ? `Зарегистрируйтесь, или <span id="login-link" class="auth-link">войдите</span>` : 
-        `Чтобы оставлять коментарии войдите или <span id="login-link" class="auth-link">зарегистрируйтесь</span>
-        `}</div>
+        <div>
+        Чтобы оставлять коментарии <span id="login-link" class="auth-link">войдите в систему</span>
+        </div>
+    </div>`;
+    appElement.innerHTML = appHtml;
+    const loadElement = document.getElementById("loading");
+    loadElement.style.display = "none";
+
+    document.getElementById("login-link").addEventListener("click", () => {
+        toggleLoginForm();
+        function toggleLoginForm() {
+            console.log("www")
+            appHtml = `           <div class="container">       
             <div class="add-form" id="inputs">
+            Форма входа
+            <br>
+            <br>
             ${isLoginMode ? 
-                `        Имя
-                <textarea type="textarea" class="add-form-text"
-                id="name-input">
-                </textarea>
+                `<textarea type="textarea" placeholder="Введите имя" class="add-form-text"
+                id="name-input"></textarea>
             <br>`: ''}
-            Логин
-                <textarea type="textarea" class="add-form-text"
+                <textarea type="textarea" placeholder="Введите логин" class="add-form-text"
                 id="login-input"></textarea>
                 <br>
-            Пароль
-                <textarea type="password" class="add-form-text"
+                <textarea type="password" placeholder="Введите пароль" class="add-form-text"
                 id="password-input"></textarea>
             <div class="add-form-row">
             <button class="add-form-button" id="login-button">
@@ -137,19 +145,23 @@ const renderApp = () => {
             </button>
             </div>
         </div>
-    </div>`;
-    appElement.innerHTML = appHtml;
-    document.getElementById('login-link').addEventListener("click", () => {
-        console.log("www")
-        isLoginMode = !isLoginMode;
-        fetchGet();
+        <br>
+        <div id="toggle-button" class="auth-link">${isLoginMode ? "Перейти ко входу" : "Перейти к регистрации"}</div>
+        </div>`
+        appElement.innerHTML = appHtml;
+            document.getElementById('toggle-button').addEventListener("click", () => {
+                console.log("www")
+                isLoginMode = !isLoginMode;
+                toggleLoginForm();
+            })
+        }
+        document.getElementById('login-button').addEventListener('click', () => {
+            console.log("works")
+            token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
+            fetchGet();
+        })
+        return;
     })
-    document.getElementById('login-button').addEventListener('click', () => {
-        console.log("works")
-        token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
-        fetchGet();
-      })
-      return;
   } else {
        const appHtml = `  <div class="container">
             <div id="loading">Подождите, комментарии загружаются...</div>
@@ -168,6 +180,8 @@ const renderApp = () => {
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
     const addCommentElement = document.getElementById("add-comment-button");
+    const loadElement = document.getElementById("loading");
+    loadElement.style.display = "none";
     //   Обработчик лайков
     const likeCountButtonListener = () => {
         const likeButtonElements = document.querySelectorAll(".like-button");
@@ -192,7 +206,8 @@ const renderApp = () => {
         }
     };
     likeCountButtonListener();
-    
+
+        
     // Написать комментарий
   addCommentElement.addEventListener("click", () => {
     commentElement.classList.remove("validation");
