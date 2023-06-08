@@ -7,7 +7,7 @@ const removeCommentElement = document.getElementById("delete-comment-button");
 const loadElement = document.getElementById("loading");
 
 
-
+const host  = "https://wedev-api.sky.pro/api/v2/vikky/comments"
 function formatDate(inputDate) {
   const commentDate = new Date(inputDate);
   const options = {
@@ -21,14 +21,13 @@ function formatDate(inputDate) {
 }
 let comments = [];
 function fetchComments() {
-  return fetch("https://webdev-hw-api.vercel.app/api/v1/viktoria-kolosova/comments",
+  return fetch(host,
     {
       method: "GET",
     })
   .then((response) => {
     return response.json()
   }).then((responseData) => {
-      console.log(responseData);
       comments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
@@ -124,40 +123,32 @@ const renderComments = () => {
   replyCommentsListener();
 }
 renderComments();
-// Удаляет последний комментарий
-removeCommentElement.addEventListener("click", () => {
-  comments.splice(-1);
-  renderComments();
-})
+
+
+
 // Выключает кнопку при пустых инпутах
 window.addEventListener('input', () => {
-  if (nameElement.value === "" || commentElement.value === "") {
+  if (commentElement.value === "") {
     addCommentElement.disabled = true;
-  } else {
-    addCommentElement.disabled = false;
-  }
+  } 
 });
+
+
 // Кнопка Enter
 window.addEventListener('keyup', () => {
   if (event.key === 'Enter') {
     addCommentElement.click();
   }
 });
+
+
 // Отправка комментариев
 addCommentElement.addEventListener("click", () => {
-  nameElement.classList.remove("validation");
   commentElement.classList.remove("validation");
-  if (nameElement.value == "" && commentElement.value == "") {
-    nameElement.classList.add("validation");
+  if (commentElement.value == "") {
     commentElement.classList.add("validation");
     return;
-  } else if (commentElement.value == "") {
-    commentElement.classList.add("validation");
-    return;
-  } else if (nameElement.value == "") {
-    nameElement.classList.add("validation");
-    return;
-  };
+  } 
 
   addCommentElement.disabled = true;
   addCommentElement.textContent = "Данные загружаются..."
@@ -165,17 +156,17 @@ addCommentElement.addEventListener("click", () => {
   const failedInput = "В поле ввода должно быть минимум три символа"
   const fetchPost = (() => {
     fetch(
-    "https://webdev-hw-api.vercel.app/api/v1/viktoria-kolosova/comments",
+    host,
     {
       method: "POST",
       body: JSON.stringify({
-        name: nameElement.value,
         text: commentElement.value,
-        forceError: true,
-      })
+      }),
+      headers: {
+        Authorization: "Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek",
+      },
     })
     .then((response) => {
-      return response.json();
       console.log(response);
       if (response.status === 201) {
         return response.json();
@@ -183,7 +174,6 @@ addCommentElement.addEventListener("click", () => {
         return Promise.reject(new Error(failedServer));
       } else {
         return Promise.reject(new Error(failedInput));
-        console.log(failedInput);
       }
     })
     .then((responseJson) => {
@@ -191,23 +181,22 @@ addCommentElement.addEventListener("click", () => {
       addCommentElement.disabled = false;
       addCommentElement.textContent = "Отправить"
       fetchComments();
-      nameElement.value = "";
       commentElement.value = "";
     })
     .catch((error) => {
+        console.log(error);
       if (error.message == failedServer) {
         alert(error);
         fetchPost();
       } else if (error.message == failedInput){
         addCommentElement.disabled = false;
-        addCommentElement.textContent = "Отправить"
+        addCommentElement.textContent = "Попробуй еще раз"
         alert(error);
       } else {
         addCommentElement.disabled = false;
         addCommentElement.textContent = "Попробуй еще раз"
         alert("Кажется, у вас сломался интернет, попробуйте позже");
       }
-      console.log(error);
     })
   });
   fetchPost();
