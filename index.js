@@ -1,6 +1,8 @@
 "use strict";
 
-const host = "https://wedev-api.sky.pro/api/v2/vikky/comments";
+import { getComments, postComments, failedInput, failedServer } from "./modules/api.js";
+
+
 function formatDate(inputDate) {
   const commentDate = new Date(inputDate);
   const options = {
@@ -41,13 +43,7 @@ function delay(interval = 300) {
 // replyCommentsListener();
 
 function fetchGet() {
-    return fetch(host, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseData) => {
+    return getComments().then((responseData) => {
         comments = responseData.comments.map((comment) => {
           return {
             name: comment.author.name,
@@ -179,7 +175,7 @@ const renderApp = () => {
             </div>`;
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
-    const addCommentElement = document.getElementById("add-comment-button");
+
     const loadElement = document.getElementById("loading");
     loadElement.style.display = "none";
     //   Обработчик лайков
@@ -208,7 +204,7 @@ const renderApp = () => {
     likeCountButtonListener();
 
         
-    // Написать комментарий
+  const addCommentElement = document.getElementById("add-comment-button");
   addCommentElement.addEventListener("click", () => {
     commentElement.classList.remove("validation");
     if (commentElement.value == "") {
@@ -217,43 +213,26 @@ const renderApp = () => {
     }
     addCommentElement.disabled = true;
     addCommentElement.textContent = "Данные загружаются...";
-    const failedServer = "Сервер сломался, попробуй позже";
-    const failedInput = "В поле ввода должно быть минимум три символа";
-    const unauthorised = "Необходимо авторизоваться";
+
     const fetchPost = () => {
-      fetch(host, {
-        method: "POST",
-        body: JSON.stringify({
-          text: commentElement.value,
-        }),
-        headers: {
-          Authorization: token,
-        },
-      })
-        .then((response) => {
-          console.log(response);
-          if (response.status === 201) {
-            return response.json();
-          } else if (response.status === 500) {
-            return Promise.reject(new Error(failedServer));
-          } else if (response.status === 401) {
-            return Promise.reject(new Error(unauthorised));
-          } else {
-            return Promise.reject(new Error(failedInput));
-          }
-        })
-        .then((responseJson) => {
+      postComments({
+        text: commentElement.value, 
+        token,
+        failedInput,
+        failedServer,
+        }).then((responseJson) => {
           console.log(responseJson);
           addCommentElement.disabled = false;
           addCommentElement.textContent = "Отправить";
-          fetchGet();
           commentElement.value = "";
+          fetchGet();
         })
         .catch((error) => {
           if (error.message == failedServer) {
             alert(error);
             fetchPost();
           } else {
+            console.log(error.message);
             addCommentElement.disabled = false;
             addCommentElement.textContent = "Попробуй еще раз";
             alert(error);
