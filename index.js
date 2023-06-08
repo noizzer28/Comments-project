@@ -1,6 +1,7 @@
 "use strict";
 
 import { getComments, postComments, failedInput, failedServer } from "./modules/api.js";
+import { renderComments, renderLogin } from "./modules/renderForms.js";
 
 
 function formatDate(inputDate) {
@@ -21,6 +22,7 @@ let comments = [];
 let token = null;
 
 fetchGet();
+
 function delay(interval = 300) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -29,20 +31,7 @@ function delay(interval = 300) {
   });
 }
 
-// Ответ на комментарий
-// const replyCommentsListener = () => {
-//   const replyButtonElements = document.querySelectorAll('.comment');
-//   for (const replyButtonElement of replyButtonElements) {
-//     replyButtonElement.addEventListener('click', () => {
-//       let index = replyButtonElement.dataset.index;
-//       commentElement.value = `Quote_start${comments[index].name}: New_line ${comments[index].comment} Quote_end`
-//       renderComments();
-//     })
-//   }
-// }
-// replyCommentsListener();
-
-function fetchGet() {
+ function fetchGet() {
     return getComments().then((responseData) => {
         comments = responseData.comments.map((comment) => {
           return {
@@ -66,39 +55,10 @@ let isLoginMode = true;
 
 // Рендер комментариев в HTML
 const renderApp = () => {
-  const commentsHtml = comments
-    .map((comment, index) => {
-      return `<li class="comment" data-index="${index}">
-             <div class="comment-header">
-               <div>${comment.name}
-                   </div>
-               <div>${comment.date}</div>
-             </div>
-             <div class="comment-body">
-               <div class="comment-text">
-                 ${comment.text
-                   .replaceAll("&", "&amp;")
-                   .replaceAll("<", "&lt;")
-                   .replaceAll(">", "&gt;")
-                   .replaceAll('"', "&quot;")}
-               </div>
-             </div>
-             <div class="comment-footer">
-               <div class="likes">
-                 <span class="likes-counter">${comment.likes}</span>
-                 <button data-index="${index}" id="likes-button" class="like-button 
-                 ${comment.isLiked ? "-active-like" : ""} ${comment.isLikeLoading ? "-loading-like" : ""}">
-                 </button>
-               </div>
-             </div>
-           </li>`;
-    })
-    .join("");
-
+  const commentsHtml = renderComments(comments);
   const appElement = document.getElementById("app");
-
-
-  if (!token) {
+  if (token == null) {
+    console.log("flag")
     let appHtml = `  
         <div class="container">
             <div id="loading">Подождите, комментарии загружаются...
@@ -114,50 +74,26 @@ const renderApp = () => {
     appElement.innerHTML = appHtml;
     const loadElement = document.getElementById("loading");
     loadElement.style.display = "none";
-
     document.getElementById("login-link").addEventListener("click", () => {
-        toggleLoginForm();
-        function toggleLoginForm() {
-            appHtml = `           <div class="container">       
-            <div class="add-form" id="inputs">
-            Форма ${isLoginMode ? "регистрации" : "входа"}
-            <br>
-            <br>
-            ${isLoginMode ? 
-                `<textarea type="textarea" placeholder="Введите имя" class="add-form-text"
-                id="name-input"></textarea>
-            <br>`: ''}
-                <textarea type="textarea" placeholder="Введите логин" class="add-form-text"
-                id="login-input"></textarea>
-                <br>
-                <textarea type="password" placeholder="Введите пароль" class="add-form-text"
-                id="password-input"></textarea>
-            <div class="add-form-row">
-            <button class="add-form-button" id="login-button">
-            ${isLoginMode ? `Зарегистрироваться` : `Войти`}
-            </button>
-            </div>
-        </div>
-        <br>
-        <div id="toggle-button" class="auth-link">${isLoginMode ? "Перейти ко входу" : "Перейти к регистрации"}</div>
-        </div>`
-        appElement.innerHTML = appHtml;
-            document.getElementById('toggle-button').addEventListener("click", () => {
-                console.log("www")
-                isLoginMode = !isLoginMode;
-                toggleLoginForm();
-            })
-            document.getElementById('login-button').addEventListener('click', () => {
-                console.log("works")
-                token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
-                fetchGet();
-            })
-        }
+      function toggleLoginForm() {
+          const appHtml = renderLogin(isLoginMode);
+          appElement.innerHTML = appHtml;
 
-        return;
+          document.getElementById('toggle-button').addEventListener("click", () => {
+            isLoginMode = !isLoginMode;
+            toggleLoginForm();
+          })
+
+          document.getElementById('auth-button').addEventListener('click', () => {
+            token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
+            renderApp();
+          })  
+      }
+      toggleLoginForm();
+    return;
     })
   } else {
-       const appHtml = `  <div class="container">
+             const appHtml = `  <div class="container">
             <div id="loading">Подождите, комментарии загружаются...</div>
             <ul class="comments" id="comments-area">
             ${commentsHtml}
@@ -172,12 +108,13 @@ const renderApp = () => {
                 Написать
             </button>
             </div>
-            </div>`;
+            </div>`;      
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
 
     const loadElement = document.getElementById("loading");
     loadElement.style.display = "none";
+    
     //   Обработчик лайков
     const likeCountButtonListener = () => {
         const likeButtonElements = document.querySelectorAll(".like-button");
@@ -218,8 +155,6 @@ const renderApp = () => {
       postComments({
         text: commentElement.value, 
         token,
-        failedInput,
-        failedServer,
         }).then((responseJson) => {
           console.log(responseJson);
           addCommentElement.disabled = false;
@@ -244,7 +179,7 @@ const renderApp = () => {
   }
 };
 
-renderApp();
+renderApp();  
 
 
 //   // Кнопка Enter
@@ -253,3 +188,16 @@ renderApp();
 //       addCommentElement.click();
 //       }
 //   });
+
+// Ответ на комментарий
+// const replyCommentsListener = () => {
+//   const replyButtonElements = document.querySelectorAll('.comment');
+//   for (const replyButtonElement of replyButtonElements) {
+//     replyButtonElement.addEventListener('click', () => {
+//       let index = replyButtonElement.dataset.index;
+//       commentElement.value = `Quote_start${comments[index].name}: New_line ${comments[index].comment} Quote_end`
+//       renderComments();
+//     })
+//   }
+// }
+// replyCommentsListener();
