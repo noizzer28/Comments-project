@@ -57,58 +57,33 @@ let isLoginMode = true;
 const renderApp = () => {
   const commentsHtml = renderComments(comments);
   const appElement = document.getElementById("app");
-  if (token == null) {
-    console.log("flag")
-    let appHtml = `  
-        <div class="container">
-            <div id="loading">Подождите, комментарии загружаются...
-            </div>
-            <ul class="comments" id="comments-area">
-            ${commentsHtml}
-            </ul>
-        <br>
-        <div>
-        Чтобы оставлять коментарии <span id="login-link" class="auth-link">войдите в систему</span>
-        </div>
-    </div>`;
-    appElement.innerHTML = appHtml;
-    const loadElement = document.getElementById("loading");
-    loadElement.style.display = "none";
-    document.getElementById("login-link").addEventListener("click", () => {
-      function toggleLoginForm() {
-          const appHtml = renderLogin(isLoginMode);
-          appElement.innerHTML = appHtml;
-
-          document.getElementById('toggle-button').addEventListener("click", () => {
-            isLoginMode = !isLoginMode;
-            toggleLoginForm();
-          })
-
-          document.getElementById('auth-button').addEventListener('click', () => {
-            token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
-            renderApp();
-          })  
-      }
-      toggleLoginForm();
-    return;
-    })
+  if (!token) {
+    renderLogin({isLoginMode, 
+      appElement, 
+      commentsHtml,
+      setToken: (newToken) => {
+        token = newToken;
+      },
+      renderApp,
+    });
+    return
   } else {
-             const appHtml = `  <div class="container">
-            <div id="loading">Подождите, комментарии загружаются...</div>
-            <ul class="comments" id="comments-area">
-            ${commentsHtml}
-            </ul>
-            <div class="add-form" id="inputs">
-            <textarea type="textarea" class="add-form-text" placeholder="FIX IT"
-            id="name-input" disabled></textarea>
-            <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
-            id="comment-input"></textarea>
-            <div class="add-form-row">
-            <button class="add-form-button" id="add-comment-button">
-                Написать
-            </button>
-            </div>
-            </div>`;      
+            const appHtml = `  <div class="container">
+          <div id="loading">Подождите, комментарии загружаются...</div>
+          <ul class="comments" id="comments-area">
+          ${commentsHtml}
+          </ul>
+          <div class="add-form" id="inputs">
+          <textarea type="textarea" class="add-form-text" placeholder="FIX IT"
+          id="name-input" disabled></textarea>
+          <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
+          id="comment-input"></textarea>
+          <div class="add-form-row">
+          <button class="add-form-button" id="add-comment-button">
+              Написать
+          </button>
+          </div>
+          </div>`;      
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
 

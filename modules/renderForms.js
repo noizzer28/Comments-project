@@ -29,32 +29,70 @@ export function renderComments(comments) {
       return newArray;
 };
 
-export function renderLogin(isLoginMode) {
-    return `<div class="container">       
-    <div class="add-form" id="inputs">
-    Форма ${isLoginMode ? "регистрации" : "входа"}
-    <br>
-    <br>
-    ${isLoginMode ? 
-        `<textarea type="textarea" placeholder="Введите имя" class="add-form-text"
-        id="name-input"></textarea>
-    <br>`: ''}
-        <textarea type="textarea" placeholder="Введите логин" class="add-form-text"
-        id="login-input"></textarea>
+export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, renderApp}) {
+        console.log("flag")
+        const appHtml = `  
+            <div class="container">
+                <div id="loading">Подождите, комментарии загружаются...
+                </div>
+                <ul class="comments" id="comments-area">
+                ${commentsHtml}
+                </ul>
+            <br>
+            <div>
+            Чтобы оставлять коментарии <span id="login-link" class="auth-link">войдите в систему</span>
+            </div>
+        </div>`;
+        appElement.innerHTML = appHtml;
+
+    const loadElement = document.getElementById("loading");
+    loadElement.style.display = "none";
+
+    document.getElementById("login-link").addEventListener("click", () => {
+        function toggleLoginForm() {
+            const appHtml = `<div class="container">       
+            <div class="add-form" id="inputs">
+            Форма ${isLoginMode ? "регистрации" : "входа"}
+            <br>
+            <br>
+            ${isLoginMode ? 
+                `<textarea type="textarea" placeholder="Введите имя" class="add-form-text"
+                id="name-input"></textarea>
+            <br>`: ''}
+                <textarea type="textarea" placeholder="Введите логин" class="add-form-text"
+                id="login-input"></textarea>
+                <br>
+                <textarea type="password" placeholder="Введите пароль" class="add-form-text"
+                id="password-input"></textarea>
+            <div class="add-form-row">
+            ${isLoginMode ? `
+            <button class="add-form-button" id="auth-button">
+            Зарегистрироваться </button>` 
+            : `            
+            <button class="add-form-button" id="login-button">Войти
+            </button>
+            `}
+            </div>
+        </div>
         <br>
-        <textarea type="password" placeholder="Введите пароль" class="add-form-text"
-        id="password-input"></textarea>
-    <div class="add-form-row">
-    ${isLoginMode ? `
-    <button class="add-form-button" id="auth-button">
-    Зарегистрироваться </button>` 
-    : `            
-    <button class="add-form-button" id="login-button">Войти
-    </button>
-    `}
-    </div>
-</div>
-<br>
-<div id="toggle-button" class="auth-link">${isLoginMode ? "Перейти ко входу" : "Перейти к регистрации"}</div>
-</div>`
+        <div id="toggle-button" class="auth-link">${isLoginMode ? "Перейти ко входу" : "Перейти к регистрации"}</div>
+        </div>`
+            appElement.innerHTML = appHtml;
+
+            document.getElementById('toggle-button').addEventListener("click", () => {
+            isLoginMode = !isLoginMode;
+            toggleLoginForm();
+            })
+
+            document.getElementById('auth-button').addEventListener('click', () => {
+            setToken('Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek');
+            renderApp();
+            })  
+        }
+        toggleLoginForm();
+        return;
+  })
 }
+ 
+
+
