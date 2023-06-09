@@ -33,14 +33,33 @@ export function postComments({text, token}) {
       })
 }
 
-export function loginApi(login, password) {
+export function loginApi({login, password}) {
   return fetch('https://wedev-api.sky.pro/api/user/login', {
     method: 'POST',
     body: JSON.stringify({
       login,
       password,
-    }).then((response) => {
-      return response.JSON;
     })
+  }).then((response) => {
+    if (response.status == 400) {
+      throw new Error("Неверный логин или пароль")
+    }
+    return response.json();
   })
+}
+
+export function regApi({name, login, password}) {
+  return fetch('https://wedev-api.sky.pro/api/user', {
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      login,
+      password,
+    })
+  }).then((response) => {
+    if (response.status == 400) {
+      throw new Error("Неверный логин или пароль")
+    }
+    return response.json();
+  })  
 }

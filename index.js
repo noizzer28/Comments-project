@@ -17,10 +17,8 @@ function formatDate(inputDate) {
 }
 
 let comments = [];
-
-// let token = 'Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek';
 let token = null;
-
+let userName = "Пользователь"
 fetchGet();
 
 function delay(interval = 300) {
@@ -50,7 +48,6 @@ function fetchGet() {
     });
 }
 
-
 let isLoginMode = true;
 
 // Рендер комментариев в HTML
@@ -61,20 +58,23 @@ const renderApp = () => {
     renderLogin({isLoginMode, 
       appElement, 
       commentsHtml,
+      renderApp,
       setToken: (newToken) => {
         token = newToken;
       },
-      renderApp,
     });
     return
   } else {
+    // function setUserName (name) {
+    //   return userName = name;
+    // };
       const appHtml = `  <div class="container">
         <div id="loading">Подождите, комментарии загружаются...</div>
         <ul class="comments" id="comments-area">
         ${commentsHtml}
         </ul>
         <div class="add-form" id="inputs">
-        <textarea type="textarea" class="add-form-text" placeholder="FIX IT"
+        <textarea type="textarea" class="add-form-text" placeholder=${userName}
         id="name-input" disabled></textarea>
         <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
         id="comment-input"></textarea>
@@ -83,7 +83,7 @@ const renderApp = () => {
             Написать
         </button>
         </div>
-        </div>`;      
+        </div>`;
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
 

@@ -1,3 +1,5 @@
+import { loginApi, regApi } from "./api.js";
+
 
 export function renderComments(comments) {
     const newArray =  comments.map((comment, index) => {
@@ -30,7 +32,6 @@ export function renderComments(comments) {
 };
 
 export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, renderApp}) {
-        console.log("flag")
         const appHtml = `  
             <div class="container">
                 <div id="loading">Подождите, комментарии загружаются...
@@ -80,23 +81,48 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
             toggleLoginForm();
             })
 
-            // if (!isLoginMode) {
-                
-            // } else {
-                
-            // }
-            document.getElementById('login-button').addEventListener('click', () => {
-            setToken('Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek');
-                renderApp();
-            })  
-
-            // document.getElementById('login-button').addEventListener('click', () => {
-            //     console.log("check")
-            //     renderApp();
-            // })
+            if (!isLoginMode) {
+                  document.getElementById('login-button').addEventListener("click", () => {
+                    const login = document.getElementById("login-input").value
+                    const password = document.getElementById("password-input").value
+                    if (login == "" || password == "") {
+                        alert("Введите данные")
+                        return;
+                    }
+                    loginApi({                  
+                        login,
+                        password,
+                    }).then ((user) => {
+                        console.log(user.user.name);
+                        setToken(`Bearer ${user.user.token}`);
+                        // setUserName(user.user.name);
+                        renderApp()
+                    }).catch ((error) => {
+                        alert(error.message)
+                    }) 
+                })
+            } else {
+                document.getElementById('login-button').addEventListener("click", () => {
+                    const login = document.getElementById("login-input").value
+                    const password = document.getElementById("password-input").value
+                    const name = document.getElementById("name-input").value
+                    if (login == "" || password == "" || name == "") {
+                        alert("Введите данные")
+                        return;
+                    }
+                    regApi({                  
+                        name,
+                        login,
+                        password,
+                    }).then ((user) => {
+                        setToken(`Bearer ${user.user.token}`)
+                        renderApp()
+                    }).catch ((error) => {
+                        alert(error.message)
+                    }) 
+                })
+            }
         }
-
-    
   })
 }
  
