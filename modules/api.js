@@ -1,4 +1,4 @@
-const host = "https://wedev-api.sky.pro/api/v2/vikky/comments";
+const host = "https://wedev-api.sky.pro/api/v2/viktoria/comments";
 
 
 export function getComments() {
@@ -58,7 +58,7 @@ export function regApi({name, login, password}) {
     })
   }).then((response) => {
     if (response.status == 400) {
-      throw new Error("Неверный логин или пароль")
+      throw new Error() 
     }
     return response.json();
   })  

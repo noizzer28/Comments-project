@@ -1,7 +1,7 @@
 "use strict";
 
-import { getComments, postComments, failedInput, failedServer } from "./modules/api.js";
-import { renderComments, renderLogin } from "./modules/renderForms.js";
+import { getComments, postComments, failedServer } from "./modules/api.js";
+import { renderComments, renderLogin, userName } from "./modules/renderForms.js";
 
 
 function formatDate(inputDate) {
@@ -18,7 +18,7 @@ function formatDate(inputDate) {
 
 let comments = [];
 let token = null;
-let userName = "Пользователь"
+
 fetchGet();
 
 function delay(interval = 300) {
@@ -48,7 +48,13 @@ function fetchGet() {
     });
 }
 
-let isLoginMode = true;
+let isLoginMode = false
+
+// export function setUserName (name) {
+//    let userName = name;
+//    return userName;
+// };
+
 
 // Рендер комментариев в HTML
 const renderApp = () => {
@@ -65,16 +71,13 @@ const renderApp = () => {
     });
     return
   } else {
-    // function setUserName (name) {
-    //   return userName = name;
-    // };
       const appHtml = `  <div class="container">
         <div id="loading">Подождите, комментарии загружаются...</div>
         <ul class="comments" id="comments-area">
         ${commentsHtml}
         </ul>
         <div class="add-form" id="inputs">
-        <textarea type="textarea" class="add-form-text" placeholder=${userName}
+        <textarea type="textarea" class="add-form-text" placeholder='${userName}'
         id="name-input" disabled></textarea>
         <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
         id="comment-input"></textarea>
@@ -100,7 +103,7 @@ const renderApp = () => {
             comments[index].isLikeLoading = true;
             renderApp();
             delay(1000).then(() => {
-            if (comments[index].isLiked == false) {
+            if (!comments[index].isLiked) {
                 comments[index].likes++;
                 comments[index].isLiked = true;
             } else {
@@ -130,8 +133,7 @@ const renderApp = () => {
       postComments({
         text: commentElement.value, 
         token,
-        }).then((responseJson) => {
-          console.log(responseJson);
+        }).then(() => {
           addCommentElement.disabled = false;
           addCommentElement.textContent = "Отправить";
           commentElement.value = "";
