@@ -31,24 +31,24 @@ function delay(interval = 300) {
   });
 }
 
- function fetchGet() {
-    return getComments().then((responseData) => {
-        comments = responseData.comments.map((comment) => {
-          return {
-            name: comment.author.name,
-            date: formatDate(comment.date),
-            text: comment.text,
-            likes: comment.likes,
-            isLiked: comment.isLiked,
-            isLikeLoading: comment.isLiked,
-          };
-        });
-        renderApp();
-      })
-      .catch((error) => {
-        console.error(error);
+function fetchGet() {
+  return getComments().then((responseData) => {
+      comments = responseData.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: formatDate(comment.date),
+          text: comment.text,
+          likes: comment.likes,
+          isLiked: comment.isLiked,
+          isLikeLoading: comment.isLiked,
+        };
       });
-  }
+      renderApp();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 
 
 let isLoginMode = true;
@@ -68,22 +68,22 @@ const renderApp = () => {
     });
     return
   } else {
-            const appHtml = `  <div class="container">
-          <div id="loading">Подождите, комментарии загружаются...</div>
-          <ul class="comments" id="comments-area">
-          ${commentsHtml}
-          </ul>
-          <div class="add-form" id="inputs">
-          <textarea type="textarea" class="add-form-text" placeholder="FIX IT"
-          id="name-input" disabled></textarea>
-          <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
-          id="comment-input"></textarea>
-          <div class="add-form-row">
-          <button class="add-form-button" id="add-comment-button">
-              Написать
-          </button>
-          </div>
-          </div>`;      
+      const appHtml = `  <div class="container">
+        <div id="loading">Подождите, комментарии загружаются...</div>
+        <ul class="comments" id="comments-area">
+        ${commentsHtml}
+        </ul>
+        <div class="add-form" id="inputs">
+        <textarea type="textarea" class="add-form-text" placeholder="FIX IT"
+        id="name-input" disabled></textarea>
+        <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
+        id="comment-input"></textarea>
+        <div class="add-form-row">
+        <button class="add-form-button" id="add-comment-button">
+            Написать
+        </button>
+        </div>
+        </div>`;      
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
 

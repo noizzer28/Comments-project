@@ -49,6 +49,7 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
     loadElement.style.display = "none";
 
     document.getElementById("login-link").addEventListener("click", () => {
+        toggleLoginForm();
         function toggleLoginForm() {
             const appHtml = `<div class="container">       
             <div class="add-form" id="inputs">
@@ -65,13 +66,8 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                 <textarea type="password" placeholder="Введите пароль" class="add-form-text"
                 id="password-input"></textarea>
             <div class="add-form-row">
-            ${isLoginMode ? `
-            <button class="add-form-button" id="auth-button">
-            Зарегистрироваться </button>` 
-            : `            
-            <button class="add-form-button" id="login-button">Войти
-            </button>
-            `}
+            <button class="add-form-button" id="login-button">${isLoginMode ? `
+            Зарегистрироваться`:`Войти`}</button>
             </div>
         </div>
         <br>
@@ -79,18 +75,28 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
         </div>`
             appElement.innerHTML = appHtml;
 
-            document.getElementById('toggle-button').addEventListener("click", () => {
+            document.getElementById("toggle-button").addEventListener("click", () => {
             isLoginMode = !isLoginMode;
             toggleLoginForm();
             })
 
-            document.getElementById('auth-button').addEventListener('click', () => {
+            // if (!isLoginMode) {
+                
+            // } else {
+                
+            // }
+            document.getElementById('login-button').addEventListener('click', () => {
             setToken('Bearer c8ccbodkdkb8co6gckd8b8cocwdg5g5k5o6g38o3co3cc3co3d03co3bc3b43k37s3c03c83d43co3cw3c03ek');
-            renderApp();
+                renderApp();
             })  
+
+            // document.getElementById('login-button').addEventListener('click', () => {
+            //     console.log("check")
+            //     renderApp();
+            // })
         }
-        toggleLoginForm();
-        return;
+
+    
   })
 }
  
