@@ -58,7 +58,7 @@ export function regApi({name, login, password}) {
     })
   }).then((response) => {
     if (response.status == 400) {
-      throw new Error() 
+      throw new Error("Пользователь с таким логином уже существует") 
     }
     return response.json();
   })  

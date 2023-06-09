@@ -1,4 +1,5 @@
 import { loginApi, regApi } from "./api.js";
+// import { setUserName } from "../index.js";
 
 
 export function renderComments(comments) {
@@ -30,8 +31,9 @@ export function renderComments(comments) {
       }).join('');   
       return newArray;
 };
-
+export let userName;
 export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, renderApp}) {
+
         const appHtml = `  
             <div class="container">
                 <div id="loading">Подождите, комментарии загружаются...
@@ -75,6 +77,7 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
         <div id="toggle-button" class="auth-link">${isLoginMode ? "Перейти ко входу" : "Перейти к регистрации"}</div>
         </div>`
             appElement.innerHTML = appHtml;
+            window.scrollTo(0, 0);
 
             document.getElementById("toggle-button").addEventListener("click", () => {
             isLoginMode = !isLoginMode;
@@ -93,9 +96,8 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                         login,
                         password,
                     }).then ((user) => {
-                        console.log(user.user.name);
-                        setToken(`Bearer ${user.user.token}`);
-                        // setUserName(user.user.name);
+                        setToken(`Bearer ${user.user.token}`)
+                        userName = user.user.name;
                         renderApp()
                     }).catch ((error) => {
                         alert(error.message)
@@ -116,6 +118,7 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                         password,
                     }).then ((user) => {
                         setToken(`Bearer ${user.user.token}`)
+                        userName = user.user.name;
                         renderApp()
                     }).catch ((error) => {
                         alert(error.message)
