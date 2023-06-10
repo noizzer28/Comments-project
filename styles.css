@@ -85,9 +85,13 @@ body {
     background-repeat: no-repeat;
     width: 22px;
     height: 22px;
+
+  }
+
+  .auth-like{
     transition-duration: 0.3s;
   }
-  .like-button:hover {
+  .auth-like:hover {
     transform: scale(1.2);
   }
   .-active-like {

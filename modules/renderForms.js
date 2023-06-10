@@ -3,8 +3,8 @@ import { fetchGet } from "../index.js";
 
 
 export function renderComments(comments, token) {
-    const newArray =  comments.map((comment, index) => {
-        return `<li class="comment" data-index="${index}">
+    const newArray =  comments.map((comment) => {
+        return `<li class="comment">
         <div class="comment-header">
           <div>${comment.name}</div>
           <div class="comment-date">
@@ -25,7 +25,7 @@ export function renderComments(comments, token) {
         <div class="comment-footer">
           <div class="likes">
             <span class="likes-counter">${comment.likes}</span>
-            <button data-id="${comment.id}" data-index="${index}" id="likes-button" class="like-button 
+            <button data-id="${comment.id}" id="likes-button" class="like-button ${!token ? "" : "auth-like"}
             ${comment.isLiked ? "-active-like" : ""} ${comment.isLikeLoading ? "-loading-like" : ""}">
             </button>
           </div>
@@ -48,6 +48,7 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
             </div>
         </div>`;
         appElement.innerHTML = appHtml;
+
 
     document.getElementById("login-link").addEventListener("click", () => {
         toggleLoginForm();
