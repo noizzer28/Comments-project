@@ -49,7 +49,6 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
         </div>`;
         appElement.innerHTML = appHtml;
 
-
     document.getElementById("login-link").addEventListener("click", () => {
         toggleLoginForm();
         function toggleLoginForm() {
