@@ -2,12 +2,16 @@ import { loginApi, regApi } from "./api.js";
 import { fetchGet } from "../index.js";
 
 
-export function renderComments(comments, userImage) {
+export function renderComments(comments) {
     const newArray =  comments.map((comment, index) => {
         return `<li class="comment" data-index="${index}">
         <div class="comment-header">
           <div>${comment.name}</div>
-          <div>${comment.date}</div>
+          <div class="comment-date">
+              <div>${comment.date}</div>
+              <img class="delete-button" src="https://img.uxwing.com/wp-content/themes/uxwing/download/checkmark-cross/close-red-icon.svg" alt="no">
+            </img>
+         </div>
         </div>
         <div class="comment-body">
           <div class="comment-text">
@@ -35,8 +39,6 @@ export function renderComments(comments, userImage) {
 export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) {
         const appHtml = `  
             <div class="container">
-                <div id="loading">Подождите, комментарии загружаются...
-                </div>
                 <ul class="comments" id="comments-area">
                 ${commentsHtml}
                 </ul>
@@ -47,8 +49,6 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
         </div>`;
         appElement.innerHTML = appHtml;
 
-    const loadElement = document.getElementById("loading");
-    loadElement.style.display = "none";
 
     document.getElementById("login-link").addEventListener("click", () => {
         toggleLoginForm();
@@ -139,7 +139,6 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
 
 export function renderPage(userImage, userName, commentsHtml) {
     return `  <div class="container">
-    <div id="loading">Подождите, комментарии загружаются...</div>
     <ul class="comments" id="comments-area">
     ${commentsHtml}
     </ul>

@@ -1,7 +1,7 @@
 "use strict";
 
-import { getComments, postComments, failedServer, likeApi } from "./modules/api.js";
-import { renderComments, renderLogin } from "./modules/renderForms.js";
+import { getComments, postComments, failedServer, likeApi, failedInput } from "./modules/api.js";
+import { renderComments, renderLogin, renderPage } from "./modules/renderForms.js";
 
 
 function formatDate(inputDate) {
@@ -18,17 +18,24 @@ function formatDate(inputDate) {
 
 let comments = [];
 let token
-  function tokenToNull () {
+let userName
+let userImage
+
+function tokenToNull () {
   token = null;
   }
+
 tokenToNull();
-let userName
+
+
+
 function localStorageData() {
   if (localStorage.getItem("userData")) {
     let userData = localStorage.getItem("userData");
     let user = JSON.parse(userData);
     token = user.token;
     userName = user.name;
+    userImage = user.imageUser;
   } else {
     token = null;
   }
@@ -60,7 +67,7 @@ let isLoginMode = false;
 
 
 const renderApp = () => {
-  const commentsHtml = renderComments(comments);
+  const commentsHtml = renderComments(comments)
   const appElement = document.getElementById("app");
 
   if (!token) {
@@ -68,29 +75,11 @@ const renderApp = () => {
       appElement, 
       commentsHtml,
       renderApp,
-    });
+    })
     return
   } else {
-      const appHtml = `  <div class="container">
-        <div id="loading">Подождите, комментарии загружаются...</div>
-        <ul class="comments" id="comments-area">
-        ${commentsHtml}
-        </ul>
-        <div class="add-form" id="inputs">
-        <input type="textarea" class="add-form-text" placeholder='${userName}'
-        id="name-input" disabled></input>
-        <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
-        id="comment-input"></textarea>
-        <div class="add-form-row">
-        <button class="add-form-button" id="add-comment-button">
-            Написать
-        </button>
-        </div>
-        </div>
-        <br>
-        <div id="exit" class="auth-link">Выйти из аккаунта</div>
-        </div>`;
-    appElement.innerHTML = appHtml;
+    const appHTML = renderPage(userImage, userName, commentsHtml)
+    appElement.innerHTML = appHTML;
     const commentElement = document.getElementById("comment-input");
 
     document.getElementById("exit").addEventListener("click", () => {
@@ -98,23 +87,17 @@ const renderApp = () => {
       tokenToNull();
       fetchGet();
     })
-
-
-    const loadElement = document.getElementById("loading");
-    loadElement.style.display = "none";
     
     //   Обработчик лайков
     const likeCountButtonListener = () => {
         const likeButtonElements = document.querySelectorAll(".like-button");
         for (const likeButtonElement of likeButtonElements) {
         likeButtonElement.addEventListener("click", () => {
-            console.log(likeButtonElement);
             let index = likeButtonElement.dataset.index;
             let id = likeButtonElement.dataset.id;
             likeButtonElement.classList.add('-loading-like')
             fetchGet();
             likeApi({id, token}).then((response) => {
-              console.log(response);
               comments[index].isLikeLoading = false;
             fetchGet();
             })
@@ -156,11 +139,18 @@ const renderApp = () => {
           if (error.message == failedServer) {
             alert(error);
             fetchPost();
-          } else {
-            console.log(error.message);
+          } else if (error.message == "Failed to fetch"){
             addCommentElement.disabled = false;
             addCommentElement.textContent = "Попробуй еще раз";
-            alert(error);
+            alert("Проверьте интернет-соединение");
+          } else if (error.message == failedInput){
+            addCommentElement.disabled = false;
+            addCommentElement.textContent = "Попробуй еще раз";
+            alert(failedInput);
+          } else {
+            addCommentElement.disabled = false;
+            addCommentElement.textContent = "Попробуй еще раз";
+            alert(error.message);
           }
         });
     };

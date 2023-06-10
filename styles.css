@@ -97,7 +97,12 @@ body {
     display: flex;
     flex-direction: column;
   }
-
+  .add-name{
+    width: 100%;
+  }
+  .add-name::placeholder {
+    color: #474545;
+  }
   .add-form-name,
   .add-form-text {
     font-size: 16px;
@@ -112,9 +117,16 @@ body {
   }
 
   .add-form-text {
-    margin-top: 12px;
     padding: 22px;
     resize: none;
+  }
+  .add-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    width: 100%;
+    gap: 10px;
   }
 
   .add-form-row {
@@ -171,4 +183,28 @@ body {
   .auth-link {
     text-decoration: underline;
     cursor: pointer;
+  }
+  .userImage {
+    width: 55px;
+    height: 55px;
+    border-radius: 5px;
+    border: 3px solid;
+    opacity: 0.85;
+  }
+
+  .delete-button {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+    
+  }
+  .delete-button:hover {
+    transform: scale(1.2);
+  }
+
+  .comment-date {
+    display: flex;
+    align-items: center;  
+    gap: 10px;
   }
