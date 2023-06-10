@@ -94,17 +94,16 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
                         login,
                         password,
                     }).then ((user) => {
-                        console.log(user);
                         const userData = {
                             name: user.user.name,
                             token: `Bearer: ${user.user.token}`,
-                            image: user.user.imageURL,
+                            imageUser: user.user.imageUrl,
                         }
                         localStorage.setItem("userData", JSON.stringify(userData));
                         fetchGet();
                     }).catch ((error) => {
-                        alert(error.message)
-                    }) 
+                        alert(error.message);
+                    })
                 })
             } else {
                 document.getElementById('login-button').addEventListener("click", () => {
