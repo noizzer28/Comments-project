@@ -78,6 +78,13 @@ export function likeApi({id, token}) {
   })
 }
 
-// export function deleteComment (params) {
-//   return 
-// }
+export function deleteApi({id, token}) {
+  return fetch('https://wedev-api.sky.pro/api/v2/viktoria/comments'+"/"+ id, {
+    method: 'DELETE',
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    return response.json();
+  })
+}
