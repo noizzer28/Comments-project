@@ -2,12 +2,11 @@ import { loginApi, regApi } from "./api.js";
 import { fetchGet } from "../index.js";
 
 
-export function renderComments(comments) {
+export function renderComments(comments, userImage) {
     const newArray =  comments.map((comment, index) => {
         return `<li class="comment" data-index="${index}">
         <div class="comment-header">
-          <div>${comment.name}
-              </div>
+          <div>${comment.name}</div>
           <div>${comment.date}</div>
         </div>
         <div class="comment-body">
@@ -31,6 +30,8 @@ export function renderComments(comments) {
       }).join('');   
       return newArray;
 };
+
+
 export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) {
         const appHtml = `  
             <div class="container">
@@ -134,6 +135,31 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
         }
   })
 }
- 
+
+
+export function renderPage(userImage, userName, commentsHtml) {
+    return `  <div class="container">
+    <div id="loading">Подождите, комментарии загружаются...</div>
+    <ul class="comments" id="comments-area">
+    ${commentsHtml}
+    </ul>
+    <div class="add-form" id="inputs">
+    <div class="add-flex">
+    <img class="userImage" src=${userImage} alt="no"></img>
+    <input type="textarea" class="add-form-text add-name" placeholder='${userName}'
+    id="name-input" disabled></input>
+    </div>
+    <textarea type="textarea" class="add-form-text name" placeholder="Введите ваш коментарий" rows="4"
+    id="comment-input"></textarea>
+    <div class="add-form-row">
+    <button class="add-form-button" id="add-comment-button">
+        Написать
+    </button>
+    </div>
+    </div>
+    <br>
+    <div id="exit" class="auth-link">Выйти из аккаунта</div>
+    </div>`;
+}
 
 
