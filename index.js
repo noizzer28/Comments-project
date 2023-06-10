@@ -72,10 +72,10 @@ const renderApp = () => {
   const appElement = document.getElementById("app");
 
   if (!token) {
-    renderLogin({isLoginMode, 
+    renderLogin({
+      isLoginMode, 
       appElement, 
       commentsHtml,
-      renderApp,
     })
     return
   } else {

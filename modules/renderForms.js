@@ -36,7 +36,7 @@ export function renderComments(comments, token) {
 };
 
 
-export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) {
+export function renderLogin({isLoginMode, appElement, commentsHtml}) {
         const appHtml = `  
             <div class="container">
                 <ul class="comments" id="comments-area">
@@ -48,9 +48,23 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
             </div>
         </div>`;
         appElement.innerHTML = appHtml;
+    
+        const commentsClickListener = () => {
+            const commentsAll = document.querySelectorAll('.comment');
+            console.log(commentsAll);
+            for (const comment of commentsAll) {
+                comment.addEventListener('click', () => {
+                    loginLink.scrollIntoView({
+                        behavior: 'smooth',
+                      })
+                })
+            }
+        }
+        commentsClickListener();
 
 
-    document.getElementById("login-link").addEventListener("click", () => {
+    const loginLink = document.getElementById("login-link")
+    loginLink.addEventListener("click", () => {
         toggleLoginForm();
         function toggleLoginForm() {
             const appHtml = `<div class="container">       
