@@ -77,3 +77,7 @@ export function likeApi({id, token}) {
     return response.json();
   })
 }
+
+// export function deleteComment (params) {
+//   return 
+// }
