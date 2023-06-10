@@ -1,7 +1,7 @@
 "use strict";
 
-import { getComments, postComments, failedServer } from "./modules/api.js";
-import { renderComments, renderLogin, userName } from "./modules/renderForms.js";
+import { getComments, postComments, failedServer, likeApi } from "./modules/api.js";
+import { renderComments, renderLogin } from "./modules/renderForms.js";
 
 
 function formatDate(inputDate) {
@@ -21,16 +21,9 @@ let token = null;
 
 fetchGet();
 
-function delay(interval = 300) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, interval);
-  });
-}
-
 function fetchGet() {
   return getComments().then((responseData) => {
+    console.log(responseData);
       comments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
@@ -39,6 +32,7 @@ function fetchGet() {
           likes: comment.likes,
           isLiked: comment.isLiked,
           isLikeLoading: comment.isLiked,
+          id: comment.id,
         };
       });
       renderApp();
@@ -48,18 +42,22 @@ function fetchGet() {
     });
 }
 
-let isLoginMode = false
-
-// export function setUserName (name) {
-//    let userName = name;
-//    return userName;
-// };
-
-
+let isLoginMode = false;
+let userName
 // Рендер комментариев в HTML
 const renderApp = () => {
+  console.log("reder");
   const commentsHtml = renderComments(comments);
   const appElement = document.getElementById("app");
+  if (localStorage.getItem("userData")) {
+    let userData = localStorage.getItem("userData");
+    let user = JSON.parse(userData);
+    token = user.token;
+    userName = user.name;
+  } else {
+    token = null;
+  }
+
   if (!token) {
     renderLogin({isLoginMode, 
       appElement, 
@@ -86,9 +84,19 @@ const renderApp = () => {
             Написать
         </button>
         </div>
+        </div>
+        <br>
+        <div id="exit" class="auth-link">Сменить пользователя</div>
         </div>`;
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
+
+    document.getElementById("exit").addEventListener("click", () => {
+      console.log("click");
+      localStorage.clear();
+      fetchGet();
+    })
+
 
     const loadElement = document.getElementById("loading");
     loadElement.style.display = "none";
@@ -100,19 +108,34 @@ const renderApp = () => {
         likeButtonElement.addEventListener("click", () => {
             event.stopPropagation();
             let index = likeButtonElement.dataset.index;
+            let id = likeButtonElement.dataset.id;
             comments[index].isLikeLoading = true;
-            renderApp();
-            delay(1000).then(() => {
-            if (!comments[index].isLiked) {
-                comments[index].likes++;
-                comments[index].isLiked = true;
-            } else {
-                comments[index].likes--;
-                comments[index].isLiked = false;
-            }
+            likeApi({id, token}).then((response) => {
+              console.log(response);
+            //   if (!comments[index].isLiked) {
+            //     comments[index].likes++;
+            //     comments[index].isLiked = true;
+            //     } else {
+            //     comments[index].likes--;
+            //     comments[index].isLiked = false;
+            // }
+              // if (!response.result.isliked) {
+              //   console.log("clik1")
+              //   comments[index].likes++;
+              //   comments[index].isLiked = true;
+              //   renderApp()
+              // } else {
+              //   console.log("clik2")
+              //   comments[index].likes--;
+              //   comments[index].isLiked = false;
+              //   renderApp()
+              // }
+
+            fetchGet();
+            })
             comments[index].isLikeLoading = false;
-            renderApp();
-            });
+            // renderApp()
+   
         });
         }
     };
@@ -178,3 +201,11 @@ renderApp();
 //   }
 // }
 // replyCommentsListener();
+
+// function delay(interval = 300) {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve();
+//     }, interval);
+//   });
+// }

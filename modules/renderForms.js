@@ -22,7 +22,7 @@ export function renderComments(comments) {
         <div class="comment-footer">
           <div class="likes">
             <span class="likes-counter">${comment.likes}</span>
-            <button data-index="${index}" id="likes-button" class="like-button 
+            <button data-id="${comment.id}" data-index="${index}" id="likes-button" class="like-button 
             ${comment.isLiked ? "-active-like" : ""} ${comment.isLikeLoading ? "-loading-like" : ""}">
             </button>
           </div>
@@ -31,7 +31,6 @@ export function renderComments(comments) {
       }).join('');   
       return newArray;
 };
-export let userName;
 export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, renderApp}) {
 
         const appHtml = `  
@@ -96,8 +95,13 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                         login,
                         password,
                     }).then ((user) => {
+                        console.log(user);
+                        const userData = {
+                            name: user.user.name,
+                            token: `Bearer: ${user.user.token}`
+                        }
                         setToken(`Bearer ${user.user.token}`)
-                        userName = user.user.name;
+                        localStorage.setItem("userData", JSON.stringify(userData));
                         renderApp()
                     }).catch ((error) => {
                         alert(error.message)
@@ -118,7 +122,11 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                         password,
                     }).then ((user) => {
                         setToken(`Bearer ${user.user.token}`)
-                        userName = user.user.name;
+                        const userData = {
+                            name: user.user.name,
+                            token: `Bearer: ${user.user.token}`
+                        }
+                        localStorage.setItem("userData", JSON.stringify(userData));
                         renderApp()
                     }).catch ((error) => {
                         alert(error.message)

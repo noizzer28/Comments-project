@@ -22,7 +22,6 @@ export function postComments({text, token}) {
           Authorization: token,
         },
       }).then((response) => {
-        console.log(response);
         if (response.status === 201) {
           return response.json();
         } else if (response.status === 500) {
@@ -62,4 +61,16 @@ export function regApi({name, login, password}) {
     }
     return response.json();
   })  
+}
+
+
+export function likeApi({id, token}) {
+  return fetch('https://wedev-api.sky.pro/api/v2/viktoria/comments'+"/"+ id + "/toggle-like", {
+    method: 'POST',
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    return response.json();
+  })
 }
