@@ -123,10 +123,10 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) 
                         const userData = {
                             name: user.user.name,
                             token: `Bearer: ${user.user.token}`,
-                            image: user.user.imageURL,
+                            imageUser: user.user.imageUrl,
                         }
                         localStorage.setItem("userData", JSON.stringify(userData));
-                        renderApp()
+                        fetchGet();
                     }).catch ((error) => {
                         alert(error.message)
                     }) 

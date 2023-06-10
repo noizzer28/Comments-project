@@ -67,6 +67,7 @@ let isLoginMode = false;
 
 
 const renderApp = () => {
+  localStorageData();
   const commentsHtml = renderComments(comments, token)
   const appElement = document.getElementById("app");
 
