@@ -1,6 +1,6 @@
 "use strict";
 
-import { getComments, postComments, failedServer, likeApi, failedInput } from "./modules/api.js";
+import { getComments, postComments, failedServer, likeApi, failedInput, deleteApi } from "./modules/api.js";
 import { renderComments, renderLogin, renderPage } from "./modules/renderForms.js";
 
 
@@ -67,7 +67,7 @@ let isLoginMode = false;
 
 
 const renderApp = () => {
-  const commentsHtml = renderComments(comments)
+  const commentsHtml = renderComments(comments, token)
   const appElement = document.getElementById("app");
 
   if (!token) {
@@ -93,12 +93,10 @@ const renderApp = () => {
         const likeButtonElements = document.querySelectorAll(".like-button");
         for (const likeButtonElement of likeButtonElements) {
         likeButtonElement.addEventListener("click", () => {
-            let index = likeButtonElement.dataset.index;
             let id = likeButtonElement.dataset.id;
             likeButtonElement.classList.add('-loading-like')
             fetchGet();
-            likeApi({id, token}).then((response) => {
-              comments[index].isLikeLoading = false;
+            likeApi({id, token}).then(() => {
             fetchGet();
             })
 
@@ -108,7 +106,21 @@ const renderApp = () => {
     };
     likeCountButtonListener();
 
+    const deleteButtonListener = () => {
+      const deleteButtonElements = document.querySelectorAll('.delete-button');
+      for (const deleteButtonElement of deleteButtonElements) {
+        deleteButtonElement.addEventListener('click', () => {
+          let id = deleteButtonElement.dataset.id;
+          deleteApi({id, token}).then(() => {
+            fetchGet();
+          })
+
+        })
         
+      }
+    }
+
+    deleteButtonListener();
   const addCommentElement = document.getElementById("add-comment-button");
   window.addEventListener('keyup', () => {
     if (event.key === 'Enter') {

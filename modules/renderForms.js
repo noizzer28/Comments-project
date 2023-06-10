@@ -2,15 +2,15 @@ import { loginApi, regApi } from "./api.js";
 import { fetchGet } from "../index.js";
 
 
-export function renderComments(comments) {
+export function renderComments(comments, token) {
     const newArray =  comments.map((comment, index) => {
         return `<li class="comment" data-index="${index}">
         <div class="comment-header">
           <div>${comment.name}</div>
           <div class="comment-date">
               <div>${comment.date}</div>
-              <img class="delete-button" src="https://img.uxwing.com/wp-content/themes/uxwing/download/checkmark-cross/close-red-icon.svg" alt="no">
-            </img>
+              ${!token ? "" : `<img data-id="${comment.id}" class="delete-button" src="https://img.uxwing.com/wp-content/themes/uxwing/download/checkmark-cross/close-red-icon.svg" alt="no">
+              </img>`}
          </div>
         </div>
         <div class="comment-body">
