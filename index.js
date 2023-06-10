@@ -17,13 +17,28 @@ function formatDate(inputDate) {
 }
 
 let comments = [];
-let token = null;
-
+let token
+  function tokenToNull () {
+  token = null;
+  }
+tokenToNull();
+let userName
+function localStorageData() {
+  if (localStorage.getItem("userData")) {
+    let userData = localStorage.getItem("userData");
+    let user = JSON.parse(userData);
+    token = user.token;
+    userName = user.name;
+  } else {
+    token = null;
+  }
+}
+localStorageData();
 fetchGet();
 
-function fetchGet() {
-  return getComments().then((responseData) => {
-    console.log(responseData);
+export function fetchGet() {
+  localStorageData();
+  return getComments({token}).then((responseData) => {
       comments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
@@ -31,7 +46,6 @@ function fetchGet() {
           text: comment.text,
           likes: comment.likes,
           isLiked: comment.isLiked,
-          isLikeLoading: comment.isLiked,
           id: comment.id,
         };
       });
@@ -43,29 +57,17 @@ function fetchGet() {
 }
 
 let isLoginMode = false;
-let userName
-// Рендер комментариев в HTML
+
+
 const renderApp = () => {
-  console.log("reder");
   const commentsHtml = renderComments(comments);
   const appElement = document.getElementById("app");
-  if (localStorage.getItem("userData")) {
-    let userData = localStorage.getItem("userData");
-    let user = JSON.parse(userData);
-    token = user.token;
-    userName = user.name;
-  } else {
-    token = null;
-  }
 
   if (!token) {
     renderLogin({isLoginMode, 
       appElement, 
       commentsHtml,
       renderApp,
-      setToken: (newToken) => {
-        token = newToken;
-      },
     });
     return
   } else {
@@ -75,8 +77,8 @@ const renderApp = () => {
         ${commentsHtml}
         </ul>
         <div class="add-form" id="inputs">
-        <textarea type="textarea" class="add-form-text" placeholder='${userName}'
-        id="name-input" disabled></textarea>
+        <input type="textarea" class="add-form-text" placeholder='${userName}'
+        id="name-input" disabled></input>
         <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
         id="comment-input"></textarea>
         <div class="add-form-row">
@@ -86,14 +88,14 @@ const renderApp = () => {
         </div>
         </div>
         <br>
-        <div id="exit" class="auth-link">Сменить пользователя</div>
+        <div id="exit" class="auth-link">Выйти из аккаунта</div>
         </div>`;
     appElement.innerHTML = appHtml;
     const commentElement = document.getElementById("comment-input");
 
     document.getElementById("exit").addEventListener("click", () => {
-      console.log("click");
       localStorage.clear();
+      tokenToNull();
       fetchGet();
     })
 
@@ -106,35 +108,17 @@ const renderApp = () => {
         const likeButtonElements = document.querySelectorAll(".like-button");
         for (const likeButtonElement of likeButtonElements) {
         likeButtonElement.addEventListener("click", () => {
-            event.stopPropagation();
+            console.log(likeButtonElement);
             let index = likeButtonElement.dataset.index;
             let id = likeButtonElement.dataset.id;
-            comments[index].isLikeLoading = true;
+            likeButtonElement.classList.add('-loading-like')
+            fetchGet();
             likeApi({id, token}).then((response) => {
               console.log(response);
-            //   if (!comments[index].isLiked) {
-            //     comments[index].likes++;
-            //     comments[index].isLiked = true;
-            //     } else {
-            //     comments[index].likes--;
-            //     comments[index].isLiked = false;
-            // }
-              // if (!response.result.isliked) {
-              //   console.log("clik1")
-              //   comments[index].likes++;
-              //   comments[index].isLiked = true;
-              //   renderApp()
-              // } else {
-              //   console.log("clik2")
-              //   comments[index].likes--;
-              //   comments[index].isLiked = false;
-              //   renderApp()
-              // }
-
+              comments[index].isLikeLoading = false;
             fetchGet();
             })
-            comments[index].isLikeLoading = false;
-            // renderApp()
+
    
         });
         }
@@ -143,7 +127,13 @@ const renderApp = () => {
 
         
   const addCommentElement = document.getElementById("add-comment-button");
+  window.addEventListener('keyup', () => {
+    if (event.key === 'Enter') {
+    addCommentElement.click();
+    }
+  })
   addCommentElement.addEventListener("click", () => {
+
     commentElement.classList.remove("validation");
     if (commentElement.value == "") {
       commentElement.classList.add("validation");
@@ -182,13 +172,6 @@ const renderApp = () => {
 renderApp();  
 
 
-//   // Кнопка Enter
-//   window.addEventListener('keyup', () => {
-//       if (event.key === 'Enter') {
-//       addCommentElement.click();
-//       }
-//   });
-
 // Ответ на комментарий
 // const replyCommentsListener = () => {
 //   const replyButtonElements = document.querySelectorAll('.comment');
@@ -201,11 +184,3 @@ renderApp();
 //   }
 // }
 // replyCommentsListener();
-
-// function delay(interval = 300) {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve();
-//     }, interval);
-//   });
-// }

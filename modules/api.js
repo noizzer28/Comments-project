@@ -1,9 +1,12 @@
 const host = "https://wedev-api.sky.pro/api/v2/viktoria/comments";
 
 
-export function getComments() {
+export function getComments({token}) {
     return fetch(host, {
         method: "GET",
+        headers: {
+          Authorization: token,
+        }
       })
         .then((response) => {
           return response.json();

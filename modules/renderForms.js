@@ -1,5 +1,5 @@
 import { loginApi, regApi } from "./api.js";
-// import { setUserName } from "../index.js";
+import { fetchGet } from "../index.js";
 
 
 export function renderComments(comments) {
@@ -31,8 +31,7 @@ export function renderComments(comments) {
       }).join('');   
       return newArray;
 };
-export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, renderApp}) {
-
+export function renderLogin({isLoginMode, appElement, commentsHtml, renderApp}) {
         const appHtml = `  
             <div class="container">
                 <div id="loading">Подождите, комментарии загружаются...
@@ -59,14 +58,14 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
             <br>
             <br>
             ${isLoginMode ? 
-                `<textarea type="textarea" placeholder="Введите имя" class="add-form-text"
-                id="name-input"></textarea>
+                `<input type="textarea" placeholder="Введите имя" class="add-form-text"
+                id="name-input"></input>
             <br>`: ''}
-                <textarea type="textarea" placeholder="Введите логин" class="add-form-text"
-                id="login-input"></textarea>
+                <input type="textarea" placeholder="Введите логин" class="add-form-text"
+                id="login-input"></input>
                 <br>
-                <textarea type="password" placeholder="Введите пароль" class="add-form-text"
-                id="password-input"></textarea>
+                <input type="password" placeholder="Введите пароль" class="add-form-text"
+                id="password-input"></input>
             <div class="add-form-row">
             <button class="add-form-button" id="login-button">${isLoginMode ? `
             Зарегистрироваться`:`Войти`}</button>
@@ -98,11 +97,11 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                         console.log(user);
                         const userData = {
                             name: user.user.name,
-                            token: `Bearer: ${user.user.token}`
+                            token: `Bearer: ${user.user.token}`,
+                            image: user.user.imageURL,
                         }
-                        setToken(`Bearer ${user.user.token}`)
                         localStorage.setItem("userData", JSON.stringify(userData));
-                        renderApp()
+                        fetchGet();
                     }).catch ((error) => {
                         alert(error.message)
                     }) 
@@ -121,10 +120,10 @@ export function renderLogin({isLoginMode, appElement, commentsHtml, setToken, re
                         login,
                         password,
                     }).then ((user) => {
-                        setToken(`Bearer ${user.user.token}`)
                         const userData = {
                             name: user.user.name,
-                            token: `Bearer: ${user.user.token}`
+                            token: `Bearer: ${user.user.token}`,
+                            image: user.user.imageURL,
                         }
                         localStorage.setItem("userData", JSON.stringify(userData));
                         renderApp()
