@@ -51,7 +51,6 @@ export function renderLogin({isLoginMode, appElement, commentsHtml}) {
     
         const commentsClickListener = () => {
             const commentsAll = document.querySelectorAll('.comment');
-            console.log(commentsAll);
             for (const comment of commentsAll) {
                 comment.addEventListener('click', () => {
                     loginLink.scrollIntoView({
