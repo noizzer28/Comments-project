@@ -2,19 +2,8 @@
 
 import { getComments, postComments, failedServer, likeApi, failedInput, deleteApi } from "./modules/api.js";
 import { renderComments, renderLogin, renderPage } from "./modules/renderForms.js";
+import { format } from "date-fns";
 
-
-function formatDate(inputDate) {
-  const commentDate = new Date(inputDate);
-  const options = {
-    year: "2-digit",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return commentDate.toLocaleDateString("ru-RU", options);
-}
 
 let comments = [];
 let token
@@ -49,7 +38,7 @@ export function fetchGet() {
       comments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
-          date: formatDate(comment.date),
+          date: format(new Date(comment.date), `yyyy-MM-dd hh.mm.ss`),
           text: comment.text,
           likes: comment.likes,
           isLiked: comment.isLiked,
