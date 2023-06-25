@@ -139,7 +139,7 @@ const renderApp = () => {
         })
         .catch((error) => {
           if (error.message == failedServer) {
-            alert(error);
+            alert(error); 
             fetchPost();
           } else if (error.message == "Failed to fetch"){
             addCommentElement.disabled = false;

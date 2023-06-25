@@ -16,6 +16,7 @@ export function getComments({token}) {
 export const failedServer = "Сервер сломался, попробуй позже";
 export const failedInput = "В поле ввода должно быть минимум три символа";
 export function postComments({text, token}) {
+  console.log(token)
     return fetch(host, {
         method: "POST",
         body: JSON.stringify({

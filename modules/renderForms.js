@@ -16,10 +16,10 @@ export function renderComments(comments, token) {
         <div class="comment-body">
           <div class="comment-text">
             ${comment.text
-              .replaceAll("&", "&amp;")
-              .replaceAll("<", "&lt;")
-              .replaceAll(">", "&gt;")
-              .replaceAll('"', "&quot;")}
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")}
           </div>
         </div>
         <div class="comment-footer">
@@ -39,7 +39,7 @@ export function renderComments(comments, token) {
 export function renderLogin({isLoginMode, appElement, commentsHtml}) {
         const appHtml = `  
             <div class="container">
-                <ul class="comments" id="comments-area">
+                <ul class="comments" id="comments-area">    
                 ${commentsHtml}
                 </ul>
             <br>
